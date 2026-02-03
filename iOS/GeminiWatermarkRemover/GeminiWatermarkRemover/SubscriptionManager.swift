@@ -9,14 +9,33 @@ class SubscriptionManager: ObservableObject {
     @Published var canRemoveWatermark: Bool = true
     @Published var dailyLimitReached: Bool = false
 
-    private let productId = "com.gemini.remover.monthly"
+    private let productId = "elm.GeminiWatermarkRemover.subscription.monthly"
     private let lastRemovalDateKey = "LastRemovalDate"
 
+    private var updates: Task<Void, Never>? = nil
+
     init() {
+        // Listen for transaction updates (renewals, external purchases)
+        updates = Task {
+            for await verification in Transaction.updates {
+                do {
+                    let transaction = try checkVerified(verification)
+                    await updateSubscriptionStatus()
+                    await transaction.finish()
+                } catch {
+                    print("Transaction verification failed")
+                }
+            }
+        }
+
         Task {
             await updateSubscriptionStatus()
             checkDailyLimit()
         }
+    }
+
+    deinit {
+        updates?.cancel()
     }
 
     func checkDailyLimit() {
@@ -51,27 +70,43 @@ class SubscriptionManager: ObservableObject {
     }
 
     func purchase() async throws {
-        guard let product = try await Product.products(for: [productId]).first else {
+        print("DEBUG: Starting purchase process for \(productId)")
+
+        let products = try await Product.products(for: [productId])
+        print("DEBUG: Fetched \(products.count) products")
+
+        guard let product = products.first else {
+            print("DEBUG: Product not found during fetch")
             return
         }
+
+        print("DEBUG: Found product: \(product.displayName), Price: \(product.displayPrice)")
+        print("DEBUG: Requesting purchase...")
 
         let result = try await product.purchase()
 
         switch result {
         case .success(let verification):
+            print("DEBUG: Purchase successful. Verifying transaction...")
             // Check whether the transaction is verified. If it isn't,
             // this function rethrows the verification error.
             let transaction = try checkVerified(verification)
 
             // The transaction is verified. Deliver content to the user.
+            print("DEBUG: Transaction verified. Updating status.")
             await updateSubscriptionStatus()
 
             // Always finish a transaction.
             await transaction.finish()
 
-        case .userCancelled, .pending:
+        case .userCancelled:
+            print("DEBUG: User cancelled purchase")
             break
-        default:
+        case .pending:
+            print("DEBUG: Purchase pending")
+            break
+        @unknown default:
+             print("DEBUG: Unknown purchase result")
             break
         }
     }

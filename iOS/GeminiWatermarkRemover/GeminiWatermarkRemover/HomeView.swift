@@ -36,9 +36,22 @@ struct HomeView: View {
                             .foregroundStyle(.black)
                             .clipShape(Capsule())
                     } else {
-                        Text("\(subscriptionManager.canRemoveWatermark ? "1" : "0") Free Removal Left")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
+                        HStack(spacing: 8) {
+                            Text("\(subscriptionManager.canRemoveWatermark ? "1" : "0") Free Removal Left")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+
+                            Button(action: { showPaywall = true }) {
+                                Text("Get Pro")
+                                    .font(.caption2)
+                                    .fontWeight(.bold)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.yellow.opacity(0.8))
+                                    .foregroundStyle(.black)
+                                    .clipShape(Capsule())
+                            }
+                        }
                     }
 
                     // Main Content Area

@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		282B8E292F319D4C0061652A /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 282B8E282F319D4C0061652A /* Configuration.storekit */; };
 		28A99A7C2F3131570059EFE0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28A99A7B2F3131550059EFE0 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		282B8E282F319D4C0061652A /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Configuration.storekit; path = GeminiWatermarkRemover/Configuration.storekit; sourceTree = "<group>"; };
 		28A99A532F312AED0059EFE0 /* GeminiWatermarkRemover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeminiWatermarkRemover.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28A99A7B2F3131550059EFE0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -38,6 +40,7 @@
 		28A99A4A2F312AED0059EFE0 = {
 			isa = PBXGroup;
 			children = (
+				282B8E282F319D4C0061652A /* Configuration.storekit */,
 				28A99A552F312AED0059EFE0 /* GeminiWatermarkRemover */,
 				28A99A7A2F3131550059EFE0 /* Frameworks */,
 				28A99A542F312AED0059EFE0 /* Products */,
@@ -124,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				282B8E292F319D4C0061652A /* Configuration.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
