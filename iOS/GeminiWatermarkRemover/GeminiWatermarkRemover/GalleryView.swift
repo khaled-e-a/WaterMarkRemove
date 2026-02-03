@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GalleryView: View {
     @EnvironmentObject var historyManager: HistoryManager
+    @State private var showClearConfirmation = false
 
     let columns = [
         GridItem(.flexible()),
@@ -14,12 +15,36 @@ struct GalleryView: View {
                 GradientBackground()
 
                 VStack {
-                    Text("History")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
-                        .padding(.top, 20)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
+                    HStack {
+                        Text("History")
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+
+                        Spacer()
+
+                        if !historyManager.items.isEmpty {
+                            Button(action: { showClearConfirmation = true }) {
+                                Image(systemName: "trash")
+                                    .font(.title2)
+                                    .foregroundStyle(.red)
+                                    .padding(8)
+                                    .background(Color.white.opacity(0.1))
+                                    .clipShape(Circle())
+                            }
+                        }
+                    }
+                    .padding(.top, 20)
+                    .padding(.horizontal)
+
+                    // Confirmation Dialog or Alert
+                    .alert("Clear History", isPresented: $showClearConfirmation) {
+                        Button("Cancel", role: .cancel) { }
+                        Button("Delete All", role: .destructive) {
+                            historyManager.clearAll()
+                        }
+                    } message: {
+                        Text("Are you sure you want to delete all history? This cannot be undone.")
+                    }
 
                     if historyManager.items.isEmpty {
                         Spacer()
@@ -41,9 +66,11 @@ struct GalleryView: View {
                                             Image(uiImage: image)
                                                 .resizable()
                                                 .scaledToFill()
+                                                .frame(minWidth: 0, maxWidth: .infinity)
                                                 .frame(height: 150)
+                                                .clipped()
                                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                .glassCardStyle()
+                                                // .glassCardStyle() // Removing this if it adds external padding, or applying it carefully
                                         }
                                     }
                                 }

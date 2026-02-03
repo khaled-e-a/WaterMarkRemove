@@ -23,7 +23,18 @@ Since I have generated the source files in a folder, you need to set up an Xcode
     -   `SubscriptionManager.swift`
     -   `HistoryManager.swift`
     -   `WatermarkRemover.swift`
+    -   `WatermarkRemover.swift`
     -   `Configuration.storekit`
+
+## [IMPORTANT] Step 3.5: Add Photo Library Permission
+**To prevent a crash when saving images, you MUST add a privacy key:**
+1.  In Xcode, click on your **Project** (blue icon at top left).
+2.  Select the **Target** (`GeminiWatermarkRemover`).
+3.  Go to the **Info** tab.
+4.  Right-click anywhere in the list -> **Add Row**.
+5.  Key: `Privacy - Photo Library Additions Usage Description`.
+6.  Value: `Save cleaned images to your gallery.`
+    *(Without this, the app will crash instantly when you tap Save).*
 
 ## Step 3: Setup Assets
 1.  In Xcode, open **Assets** (Asset Catalog).

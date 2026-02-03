@@ -11,14 +11,15 @@ struct MainTabView: View {
     var body: some View {
         ZStack {
             // Content
-            Group {
-                switch selectedTab {
-                case .home:
+                ZStack {
                     HomeView()
-                case .gallery:
+                        .opacity(selectedTab == .home ? 1 : 0)
+                        .allowsHitTesting(selectedTab == .home)
+
                     GalleryView()
+                        .opacity(selectedTab == .gallery ? 1 : 0)
+                        .allowsHitTesting(selectedTab == .gallery)
                 }
-            }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             // Custom Tab Bar

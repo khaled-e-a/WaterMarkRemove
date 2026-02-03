@@ -159,17 +159,34 @@ struct HomeView: View {
                                         .disabled(isProcessing)
                                     } else {
                                         // Save/Share Button
-                                        ShareLink(item: Image(uiImage: outputImage!), preview: SharePreview("Cleaned Image", image: Image(uiImage: outputImage!))) {
-                                            HStack {
-                                                Image(systemName: "square.and.arrow.up")
-                                                Text("Share / Save")
+                                        HStack(spacing: 12) {
+                                            // Save Button
+                                            Button(action: saveToPhotos) {
+                                                HStack {
+                                                    Image(systemName: "square.and.arrow.down")
+                                                    Text("Save")
+                                                }
+                                                .fontWeight(.bold)
+                                                .frame(maxWidth: .infinity)
+                                                .padding()
+                                                .background(Color.blue)
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                .foregroundStyle(.white)
                                             }
-                                            .fontWeight(.bold)
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(Color.green)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            .foregroundStyle(.white)
+
+                                            // Share Button
+                                            ShareLink(item: Image(uiImage: outputImage!), preview: SharePreview("Cleaned Image", image: Image(uiImage: outputImage!))) {
+                                                HStack {
+                                                    Image(systemName: "square.and.arrow.up")
+                                                    Text("Share")
+                                                }
+                                                .fontWeight(.bold)
+                                                .frame(maxWidth: .infinity)
+                                                .padding()
+                                                .background(Color.green)
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                .foregroundStyle(.white)
+                                            }
                                         }
                                     }
                                 }
@@ -236,6 +253,38 @@ struct HomeView: View {
                     self.isProcessing = false
                 }
             }
+        }
+    }
+
+
+    func saveToPhotos() {
+        guard let image = outputImage else { return }
+        let imageSaver = ImageSaver()
+        imageSaver.successHandler = {
+            self.errorMessage = "Image saved to Photos!"
+            self.showingError = true
+        }
+        imageSaver.errorHandler = { error in
+            self.errorMessage = "Error saving image: \(error.localizedDescription)"
+            self.showingError = true
+        }
+        imageSaver.writeToPhotoAlbum(image: image)
+    }
+}
+
+class ImageSaver: NSObject {
+    var successHandler: (() -> Void)?
+    var errorHandler: ((Error) -> Void)?
+
+    func writeToPhotoAlbum(image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            errorHandler?(error)
+        } else {
+            successHandler?()
         }
     }
 }

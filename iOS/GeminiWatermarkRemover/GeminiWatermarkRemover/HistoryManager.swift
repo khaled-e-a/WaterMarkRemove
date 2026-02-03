@@ -70,6 +70,18 @@ class HistoryManager: ObservableObject {
         saveIndex()
     }
 
+    func clearAll() {
+        // Remove all files
+        for item in items {
+            let fileUrl = imagesDirectory.appendingPathComponent(item.filename)
+            try? FileManager.default.removeItem(at: fileUrl)
+        }
+
+        // Clear list
+        items.removeAll()
+        saveIndex()
+    }
+
     private func saveIndex() {
         do {
             let data = try JSONEncoder().encode(items)
