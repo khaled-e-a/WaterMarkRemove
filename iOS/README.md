@@ -59,7 +59,10 @@ Since I have generated the source files in a folder, you need to set up an Xcode
 
 ---
 
-# Gemini Watermark Remover iOS App - Implementation Plan
+
+## Release to App Store
+For a detailed guide on creating your App ID, In-App Purchases, and submitting to the App Store, read:
+[App Store Release Guide](APP_STORE_SETUP.md)
 
 ## Goal Description
 Create a native iOS application using SwiftUI to remove Gemini watermarks from photos. The application will replicate the logic from the user-provided repository (which uses a Reverse Alpha Blending algorithm) and include a monetization model (1 free removal/day, subscription for unlimited).

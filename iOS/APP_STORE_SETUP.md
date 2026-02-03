@@ -75,4 +75,55 @@ To test "Real" In-App Purchases without paying:
 
 > [!IMPORTANT]
 > **If you are testing in Simulator**: You do NOT need the steps above. You only need the `Configuration.storekit` file (which is already set up).
-> **If you are testing on Real Device (Debug/TestFlight)**: You NEED the steps above.
+
+## Step 6: Prepare for Release (Xcode)
+1.  **App Icon**:
+    -   Make sure you have added all icon sizes in `Assets.xcassets/AppIcon`.
+    -   You can use online generators (like "App Icon Generator") to create the full set from your logo.
+2.  **Versioning**:
+    -   In Xcode -> Target -> General tab.
+    -   Set **Version** to `1.0`.
+    -   Set **Build** to `1`.
+3.  **Signing**:
+    -   In Xcode -> Target -> Signing & Capabilities tab.
+    -   Ensure **Automatically manage signing** is checked.
+    -   Team: Select your Team.
+
+## Step 7: Archive and Upload
+1.  Select **Any iOS Device (arm64)** as the build target (Top bar near the Play button).
+2.  Go to Menu **Product** -> **Archive**.
+3.  Wait for the build to finish. The **Organizer** window will open.
+4.  Select the latest archive.
+5.  Click **Distribute App**.
+6.  Select **TestFlight & App Store** -> **Next**.
+7.  Select **Upload** -> **Next**.
+8.  Keep default options checked (Manage Version and Build Number, etc.) -> **Next**.
+9.  Click **Upload** and wait.
+
+## Step 8: Submission (App Store Connect)
+1.  Go back to [App Store Connect](https://appstoreconnect.apple.com/).
+2.  Go to your App -> **TestFlight** tab.
+    -   Wait for the build to appear (Can take 10-20 minutes to process).
+    -   Once "Ready to Submit", add missing compliance info (Encryption: Usually "No" if using standard https).
+3.  **Deploy to Store**:
+    -   Go to **App Store** tab -> **1.0 Prepare for Submission**.
+    -   **Build**: Click (+) and select the build you uploaded.
+    -   **Screenshots**: Upload screenshots for iPhone (6.5" and 5.5").
+    -   **Description**: Write your marketing text.
+    -   **Keywords**: `watermark remover, ai photo editor, magic eraser` etc.
+    -   **Support URL**: Link to a simple website or Github page issue tracker.
+    -   **Copyright**: `2024 Your Name`.
+
+## Step 9: Marketing Copy
+
+### Promotional Text (Max 170 characters)
+*Option 1 (Direct benefit):*
+"Instantly remove Gemini watermarks with AI! Restore your images to their original quality in seconds. Private, secure, and easy to use. Try it free!"
+
+*Option 2 (Feature focused):*
+"The ultimate AI tool to erase Gemini watermarks. Clean up your generated images effortlessly. High-quality results with just one tap."
+
+*Option 3 (Short & punchy):*
+"Remove Gemini watermarks like magic! AI-powered cleaning for perfect images. 100% private, runs on-device. Unlock your photos today."
+
+
