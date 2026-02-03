@@ -38,9 +38,16 @@ class WatermarkRemover {
     // MARK: - Public API
 
     func removeWatermark(from image: UIImage) async throws -> UIImage {
+        // 0. Normalize Orientation
+        // This prevents the image from flipping/rotating if it has EXIF orientation metadata
+        let normalizedImage = fixOrientation(image: image)
+
         // 1. Detect Config
-        let width = Int(image.size.width)
-        let height = Int(image.size.height)
+        // Use cgImage dimensions to ensure we are working with actual pixels
+        guard let cgImage = normalizedImage.cgImage else { throw WatermarkError.imageProcessingFailed }
+        let width = cgImage.width
+        let height = cgImage.height
+
         let config = detectWatermarkConfig(width: width, height: height)
         let position = calculateWatermarkPosition(width: width, height: height, config: config)
 
@@ -48,7 +55,18 @@ class WatermarkRemover {
         let alphaMap = try await getAlphaMap(size: config.logoSize)
 
         // 3. Process Image
-        return try await processImage(image, alphaMap: alphaMap, position: position)
+        return try await processImage(normalizedImage, alphaMap: alphaMap, position: position)
+    }
+
+    private func fixOrientation(image: UIImage) -> UIImage {
+        if image.imageOrientation == .up { return image }
+
+        UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
+        image.draw(in: CGRect(origin: .zero, size: image.size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return normalizedImage ?? image
     }
 
     // MARK: - Internal Logic

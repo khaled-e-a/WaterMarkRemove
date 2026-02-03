@@ -92,41 +92,86 @@ struct ImageDetailView: View {
     let image: UIImage
     let item: HistoryItem
 
+    // Alert state for Save action
+    @State private var showingSaveAlert = false
+    @State private var saveMessage = ""
+
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            VStack {
-                Spacer()
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                Spacer()
+            ZStack(alignment: .top) {
+                // Layer 1: Image (Centered)
+                VStack {
+                    Spacer()
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                    Spacer()
+                }
 
-                HStack(spacing: 20) {
-                    ShareLink(item: Image(uiImage: image), preview: SharePreview("Processed Image", image: Image(uiImage: image))) {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                            .padding()
-                            .background(Color.white.opacity(0.2))
-                            .clipShape(Circle())
+                // Layer 2: Floating Action Buttons (Top)
+                HStack(spacing: 30) {
+                    // Save Button
+                    Button(action: saveImageToPhotos) {
+                        VStack(spacing: 5) {
+                            Image(systemName: "square.and.arrow.down")
+                                .font(.title2)
+                            Text("Save")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.white)
                     }
 
+                    // Share Button
+                    ShareLink(item: Image(uiImage: image), preview: SharePreview("Processed Image", image: Image(uiImage: image))) {
+                        VStack(spacing: 5) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.title2)
+                            Text("Share")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.white)
+                    }
+
+                    // Delete Button
                     Button(role: .destructive) {
                         historyManager.deleteItem(item)
                         dismiss()
                     } label: {
-                        Image(systemName: "trash")
-                            .font(.title)
-                            .foregroundStyle(.red)
-                            .padding()
-                            .background(Color.white.opacity(0.1))
-                            .clipShape(Circle())
+                        VStack(spacing: 5) {
+                            Image(systemName: "trash")
+                                .font(.title2)
+                            Text("Delete")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.red)
                     }
                 }
-                .padding(.bottom, 30)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 24)
+                .background(Color.black.opacity(0.6))
+                .clipShape(Capsule())
+                .padding(.top, 50) // More padding from top safe area
             }
         }
+        .alert("Save Image", isPresented: $showingSaveAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(saveMessage)
+        }
+    }
+
+    func saveImageToPhotos() {
+        let imageSaver = ImageSaver()
+        imageSaver.successHandler = {
+            self.saveMessage = "Image saved to Photos!"
+            self.showingSaveAlert = true
+        }
+        imageSaver.errorHandler = { error in
+            self.saveMessage = "Error saving image: \(error.localizedDescription)"
+            self.showingSaveAlert = true
+        }
+        imageSaver.writeToPhotoAlbum(image: image)
     }
 }
